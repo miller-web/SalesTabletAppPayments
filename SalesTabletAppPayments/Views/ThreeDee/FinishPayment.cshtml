@@ -1,0 +1,14 @@
+﻿@model SalesTabletAppPayments.Models.PaymentResult
+@{
+    ViewBag.Title = "PaymentResult";
+}
+<h2>Payment Result</h2>
+
+<pre> @Html.Raw(Model.JsonString)</pre>
+
+<script>
+function getResult() {
+    console.log("ok", "@Model.IsSuccess");
+    return @Html.Raw(Model.JsonString);
+}
+</script>
