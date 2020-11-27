@@ -50,6 +50,18 @@ namespace SalesTabletAppPayments.Controllers
             }
         }
 
+        public ActionResult WaitPayment()
+        {
+            Trace.TraceInformation("Process WaitPayment", this);
+            var model = new ThreeDSModel
+            {
+                PaRes = HttpContext.Request.Form["PaRes"], //PaRes
+                MD = HttpContext.Request.Form["MD"]
+            };
+            Trace.TraceInformation($"ReservationTermUrl - ReservationPayModel: PaRes {model.PaRes}  MD {model.MD}", this);
+            return View(model);
+        }
+
         public ActionResult FinishPayment(ThreeDSModel model)
         {
             // Requires form post, comes as a redirect from bank, this is set as "TermUrl" as per WP docs
@@ -126,12 +138,15 @@ namespace SalesTabletAppPayments.Controllers
                     Trace.TraceError("Worldpay Authorize Exception {0} {1}", exc, this);
                     throw exc;
                 }
+                //throw new Exception("Test exception");
             }
             catch (Exception x)
             {
                 Trace.TraceError("Worldpay Authorize Exception {0} {1}", x, this);
                 result.IsSuccess = false;
-                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError);
+                var orderResponse = new OrderResponse { paymentStatus = OrderStatus.FAILED };
+                result.JsonString = JsonConvert.SerializeObject(orderResponse, new Newtonsoft.Json.Converters.StringEnumConverter());
+                return View(result);
             }
         }
     }

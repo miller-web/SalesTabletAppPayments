@@ -3,7 +3,8 @@
     ViewBag.Title = "PaymentResult";
 }
 <script>
-function getResult() {
+    console.log("Finish payment");
+    function getResult() {
    // console.log("ok", "@Model.IsSuccess");
     return @Html.Raw(Model.JsonString);
 }
