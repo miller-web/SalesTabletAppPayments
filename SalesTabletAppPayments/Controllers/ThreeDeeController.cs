@@ -154,17 +154,15 @@ namespace SalesTabletAppPayments.Controllers
                 catch (WorldpayException exc)
                 {
                     result.IsSuccess = false;
-                    Trace.TraceError("Worldpay Authorize WorldpayException {0} {1}", exc, this);
+                    Trace.TraceError($"Worldpay Authorize WorldpayException Message: {exc.Message} Stacktrace: {exc.StackTrace} API: {exc.apiError.message} {exc.apiError.description}");
                     throw exc;
                 }
                 catch (Exception x)
                 {
-                    // var to = restClient.GetOrderService().FindOrder(orderCode);
                     result.IsSuccess = false;
-                    Trace.TraceError("Worldpay Authorize Exception {0} {1}", x, this);
+                    Trace.TraceError($"Worldpay Authorize Exception: {x.Message} {x.StackTrace}");
                     throw x;
                 }
-                //throw new Exception("Test exception");
             }
             catch (Exception x)
             {
@@ -179,7 +177,7 @@ namespace SalesTabletAppPayments.Controllers
                     {
                         var foundOrder = restClient.GetOrderService().FindOrder(orderCode);
                        
-                        if (foundOrder != null)
+                        if (foundOrder != null) 
                         {
                             message += $"\r\n\r\n** ORDER STATUS: {foundOrder.paymentResponse} {foundOrder.paymentStatus} {foundOrder.paymentStatusReason} **\r\n\r\n";
                             if (foundOrder.paymentStatus.ToString().Equals("SUCCESS", StringComparison.OrdinalIgnoreCase))
@@ -193,7 +191,7 @@ namespace SalesTabletAppPayments.Controllers
                     catch (Exception xx)
                     {
                         // Log and swallow exception so we can still report the issue
-                        Trace.TraceError("Exception: was unable to check order", xx, this);
+                        Trace.TraceError($"Exception: was unable to check order. {xx.Message} {xx.StackTrace}");
                         message += "\r\nFailed to get last order\r\n";
                     }
 
